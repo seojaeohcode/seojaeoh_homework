@@ -10,15 +10,15 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/read.css' %}">
   {% if not request.session.session_id %}
-  <script>
-    alert('로그인 필수!')
-    location.href = "{% url 'member:login' %}"
-  </script>
+     <script>
+        alert('로그인을 하셔야 접근이 가능합니다.')
+        location.href = "{% url 'member:login' %}"
+     </script>
   {% endif %}
   <script>
     function delBtn(){
       if(confirm("정말 삭제하시겠습니까?")){
-        location.href="{% url 'freeBoard:fboardDelete' fboard.b_no %}"
+        location.href="{% url 'freeBoard:fboardDelete' nowpage category sword fboard.b_no %}"
       }
     }
   </script>
@@ -81,17 +81,21 @@
         </td>
       </tr>
       <tr>
-        <td><strong>다음글</strong> <span class="separator">|</span> [키즈잼] 2월 프로그램 안내</td>
+        <td><strong>다음글</strong> <span class="separator">|</span>
+          <a href="{% url 'freeBoard:fboardView' nowpage category sword fboardNext.b_no  %}">{{fboardNext.b_title}}</a>
+        </td>
       </tr>
       <tr>
-        <td><strong>이전글</strong> <span class="separator">|</span> [키즈잼] 2020년 1분기 정기 휴관일 안내</td>
+        <td><strong>이전글</strong> <span class="separator">|</span>
+          <a href="{% url 'freeBoard:fboardView' nowpage category sword fboardPrev.b_no  %}">{{fboardPrev.b_title}}</a>
+        </td>
       </tr>
     </table>
 
-    <a href="{% url 'freeBoard:fboardList' %}"><div class="list">목록</div></a>
+    <a href="{% url 'freeBoard:fboardList' nowpage category sword %}"><div class="list" >목록</div></a>
     <div class="list" onclick="delBtn()">삭제</div>
-    <a href="{% url 'freeBoard:fboardUpdate' fboard.b_no %}"><div class="list">수정</div></a>
-    <a href="{% url 'freeBoard:fboardReply' fboard.b_no %}"><div class="list">답글쓰기</div></a>
+    <a href="{% url 'freeBoard:fboardUpdate' nowpage category sword fboard.b_no %}"><div class="list">수정</div></a>
+    <a href="{% url 'freeBoard:fboardReply' nowpage category sword fboard.b_no %}"><div class="list">답글쓰기</div></a>
   </section>
 
   <footer>

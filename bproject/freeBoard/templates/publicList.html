@@ -1,30 +1,20 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pages - Login</title>
+  <title>Document</title>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700,900&display=swap&subset=korean" rel="stylesheet">
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/write.css' %}">
+  <link rel="stylesheet" href="{% static 'css/notice_list.css' %}">
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
   <script>
-    function updateBtn(){
-      if ($("#title").val()==""){
-        alert("제목을 입력하셔야 등록이 가능합니다.")
-        $("#title").focus()
-        return false
-      }
-      document.write.submit()
-    }
-
-    function cancelBtn(){
-      location.href="{% url 'freeBoard:fboardView' nowpage category sword fboard.b_no %}"
-    }
+    console.log('{{publicList}}')
   </script>
 </head>
-
 <body>
   <header>
     <ul>
@@ -37,7 +27,7 @@
   </header>
 
   <nav>
-    <div class="logo"></div>
+    <a href="/"><div class="logo"></div></a>
 
     <div id="search">
       <div class="search"></div><br>
@@ -61,57 +51,66 @@
   </nav>
 
   <section>
-    <h1>게시판 수정</h1>
-    <hr>
+    <h1>NOTICE</h1>
+    <div class="wrapper">
+      <form action="" name="search" method="post">
+        <select name="category" id="category">
+          <option value="0">전체</option>
+          <option value="title">제목</option>
+          <option value="content">내용</option>
+        </select>
 
-    <form action="{% url 'freeBoard:fboardUpdate' nowpage category sword fboard.b_no %}" name="write" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <table>
-        <colgroup>
-          <col width="15%">
-          <col width="85%">
-        </colgroup>
-        <tr>
-          <th>제목</th>
-          <td>
-            <input type="text" name="title" id="title" value={{fboard.b_title}}>
-          </td>
-        </tr>
-        <tr>
-          <th>작성자</th>
-          <td>
-            <input type="text" name="id" value="{{request.session.session_id }}" readonly >
-          </td>
-        </tr>
-        <tr>
-          <th>내용</th>
-          <td>
-            <textarea name="content" cols="50" rows="10">{{fboard.b_content}}</textarea>
-          </td>
-        </tr>
-        <tr>
-          <th>이미지 표시</th>
-          <td>
-            <input type="file" name="file" id="file">
-          </td>
-        </tr>
-        <tr>
-          <th>파일이름</th>
-          {% if fboard.b_file %}
-            <td>{{fboard.b_file}}</td>
-            <input type="hidden" name="refile" value="{{fboard.b_file}}">
-          {% else %}
-            <td>데이터 없음</td>
-          {% endif %}
-        </tr>
-      </table>
-      <hr>
-      <div class="button-wrapper">
-        <button type="button" onclick="updateBtn()" class="write">수정</button>
-        <button type="button" onclick="cancelBtn()" class="cancel">취소</button>
-      </div>
-    </form>
+        <div class="title">
+          <input type="text" size="16">
+        </div>
+  
+        <button type="submit"><i class="fas fa-search"></i></button>
+      </form>
+    </div>
 
+    <table>
+      <colgroup>
+        <col width="15%">
+        <col width="45%">
+        <col width="15%">
+        <col width="15%">
+        <col width="10%">
+      </colgroup>
+      <tr>
+        <th>ISIN코드</th>
+        <th>종목명</th>
+        <th>종가</th>
+        <th>전일대비</th>
+        <th>기준일</th>
+      </tr>
+      <!-- 반복시작 -->
+      {% for data in publicList %}
+        <tr>
+          <td>{{data.isinCd}}</td>
+          <td class="table-title">{{data.itmsNm}}</td>
+          <td>{{data.clpr|intcomma}}</td>
+          <td>{{data.vs}}</td>
+          <td>{{data.basDt}}</td>
+        </tr>
+      {% endfor %}
+      
+      <!-- 반복끝 -->
+    </table>
+
+    <ul class="page-num">
+      <li class="first"></li>
+      <li class="prev"></li>
+      {% for i in "x"|rjust:numOfRows %}
+      {% comment %} {% for i in nlist %} {% endcomment %}
+      <li class="num">
+        <div>{{forloop.counter}}</div>
+      </li>
+      {% endfor %}
+      <li class="next"></li>
+      <li class="last"></li>
+    </ul>
+
+    <div class="write">쓰기</div>
   </section>
 
   <footer>

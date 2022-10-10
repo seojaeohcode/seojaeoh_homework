@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'home',
     'member',
     'freeBoard',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
