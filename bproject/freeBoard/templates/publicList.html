@@ -11,9 +11,73 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/notice_list.css' %}">
   <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    console.log('{{publicList}}')
-  </script>
+
+    $(function(){
+      //chartBtn()
+    })
+
+    function chartBtn(){
+      $.ajax({
+          url:"{% url 'freeBoard:chartList' %}",
+          type:"post",
+          data:{},
+          dataType:"json",
+          success:function(data){
+              console.log(data)
+
+              let stock_label = []
+      let stock_data = []
+
+      for(var i in data){
+          stock_label.push(data[i].itmsNm)
+          stock_data.push(data[i].clpr)
+      }
+          const ctx = document.getElementById('myChart').getContext("2d");
+          const myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: stock_label,
+                  datasets: [{
+                      label: '삼성전자 주식시세',
+                      data: stock_data,
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      y: {
+                          beginAtZero: true
+                      }
+                  }
+              }
+          });
+          },
+          error:function(data){
+              alert("실패")
+          }
+      })
+  }
+
+  chartBtn()
+</script>
 </head>
 <body>
   <header>
@@ -96,7 +160,7 @@
       
       <!-- 반복끝 -->
     </table>
-
+    
     <ul class="page-num">
       <li class="first"></li>
       <li class="prev"></li>
@@ -109,10 +173,15 @@
       <li class="next"></li>
       <li class="last"></li>
     </ul>
-
+    
     <div class="write">쓰기</div>
+    
+    
+    
   </section>
-
+  <div>
+    <canvas id="myChart"></canvas>
+  </div>
   <footer>
     <div class="wrapper">
       <div class="footer-left">

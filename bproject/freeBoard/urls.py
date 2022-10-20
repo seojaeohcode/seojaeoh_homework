@@ -21,5 +21,7 @@ urlpatterns = [
     
     # 공공데이터
     path('publicList/',views.publicList,name="publicList"),
-    
+    path('chart01/',views.chart01,name="chart01"),
+    path('chartData/',views.chartData,name="chartData"),
+    path('chartList/',views.chartList,name="chartList"),
 ]

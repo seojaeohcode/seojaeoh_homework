@@ -4,28 +4,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Pages - Login</title>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700,900&display=swap&subset=korean" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/notice_list.css' %}">
-  <link rel="stylesheet" href="{% static 'css/read.css' %}">
   <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/write.css' %}">
   <script>
     function writeBtn(){
-      location.href="{% url 'freeBoard:fboardWrite' nowpage category sword %}"
-    }
-
-    function searchBtn(){
-      if ($("#sword").val().length<=1){
-        alert("두글자 이상 입력하셔야 합니다.")
-        $("#sword").focus()
+      if ($("#title").val()==""){
+        alert("제목을 입력하셔야 등록이 가능합니다.")
+        $("#title").focus()
         return false
       }
-      document.search.submit()
+      document.write.submit()
+    }
+
+    function cancelBtn(){
+      location.href="{% url 'freeBoard:fboardList' nowpage category sword %}"
     }
   </script>
 </head>
+
 <body>
   <header>
     <ul>
@@ -38,7 +37,7 @@
   </header>
 
   <nav>
-    <a href="/"><div class="logo"></div></a>
+    <div class="logo"></div>
 
     <div id="search">
       <div class="search"></div><br>

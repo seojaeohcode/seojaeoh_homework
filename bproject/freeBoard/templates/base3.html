@@ -4,28 +4,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Pages - Login</title>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700,900&display=swap&subset=korean" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/notice_list.css' %}">
-  <link rel="stylesheet" href="{% static 'css/read.css' %}">
   <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/write.css' %}">
   <script>
-    function writeBtn(){
-      location.href="{% url 'freeBoard:fboardWrite' nowpage category sword %}"
-    }
-
-    function searchBtn(){
-      if ($("#sword").val().length<=1){
-        alert("두글자 이상 입력하셔야 합니다.")
-        $("#sword").focus()
+    function updateBtn(){
+      if ($("#title").val()==""){
+        alert("제목을 입력하셔야 등록이 가능합니다.")
+        $("#title").focus()
         return false
       }
-      document.search.submit()
+      document.write.submit()
+    }
+
+    function cancelBtn(){
+      location.href="{% url 'freeBoard:fboardView' nowpage category sword fboard.b_no %}"
     }
   </script>
 </head>
+
 <body>
   <header>
     <ul>
@@ -33,12 +32,12 @@
       <li>로그인</li> <span>|</span>
       <li>고객행복센터</li> <span>|</span>
       <li>배송지역검색</li> <span>|</span>
-      <li>기프트카드 수정</li>
+      <li>기프트카드 등록</li>
     </ul>
   </header>
 
   <nav>
-    <a href="/"><div class="logo"></div></a>
+    <div class="logo"></div>
 
     <div id="search">
       <div class="search"></div><br>
@@ -62,9 +61,57 @@
   </nav>
 
   <section>
-    {% block content-block %}
-    
-    {% endblock content-block %}
+    <h1>게시판 수정</h1>
+    <hr>
+
+    <form action="{% url 'freeBoard:fboardUpdate' nowpage category sword fboard.b_no %}" name="write" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <table>
+        <colgroup>
+          <col width="15%">
+          <col width="85%">
+        </colgroup>
+        <tr>
+          <th>제목</th>
+          <td>
+            <input type="text" name="title" id="title" value={{fboard.b_title}}>
+          </td>
+        </tr>
+        <tr>
+          <th>작성자</th>
+          <td>
+            <input type="text" name="id" value="{{request.session.session_id }}" readonly >
+          </td>
+        </tr>
+        <tr>
+          <th>내용</th>
+          <td>
+            <textarea name="content" cols="50" rows="10">{{fboard.b_content}}</textarea>
+          </td>
+        </tr>
+        <tr>
+          <th>이미지 표시</th>
+          <td>
+            <input type="file" name="file" id="file">
+          </td>
+        </tr>
+        <tr>
+          <th>파일이름</th>
+          {% if fboard.b_file %}
+            <td>{{fboard.b_file}}</td>
+            <input type="hidden" name="refile" value="{{fboard.b_file}}">
+          {% else %}
+            <td>데이터 없음</td>
+          {% endif %}
+        </tr>
+      </table>
+      <hr>
+      <div class="button-wrapper">
+        <button type="button" onclick="updateBtn()" class="write">수정</button>
+        <button type="button" onclick="cancelBtn()" class="cancel">취소</button>
+      </div>
+    </form>
+
   </section>
 
   <footer>

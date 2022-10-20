@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.shortcuts import render,redirect
+from freeBoard.models import Revenue
 from member.models import Member
 from freeBoard.models import Comment, Fboard
 from django.db.models import F,Q
@@ -9,7 +10,26 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
+def chart01(request):
+    return render(request, 'chart01.html')
 
+@csrf_exempt
+def chartData(request):
+    qs = Revenue.objects.all()
+    chartList = list(qs.values())
+    return JsonResponse(chartList, safe=False)
+
+@csrf_exempt
+def chartList(request):
+    public_key ='918RE13GA7OY7ZEmUzApgbOeAcQoZ%2FaHsXWcqPAKQ9YNNPj83KOstRMRIUrCFIAcm9qj2R6b7NFZjp%2FYsYzJLg%3D%3D'
+    resultType ='json'
+    url = 'http://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo?serviceKey={}&numOfRows=10&pageNo=1&resultType={}'.format(public_key,resultType)
+    res = requests.get(url)
+    json_res = json.loads(res.text)
+    publicList = json_res['response']['body']['items']['item']
+    nlist = [1,2,3,4,5]
+    
+    return JsonResponse(publicList, safe=False)
 
 # 공공데이터 리스트
 def publicList(request):
